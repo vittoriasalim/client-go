@@ -1191,15 +1191,17 @@ func (r *Request) transformResponse(ctx context.Context, resp *http.Response, re
 			logger.V(2).Info("Stream error when reading response body, may be caused by closed connection", "err", err)
 			streamErr := fmt.Errorf("stream error when reading response body, may be caused by closed connection. Please retry. Original error: %w", err)
 			return Result{
-				err:    streamErr,
-				logger: logger,
+				err:        streamErr,
+				statusCode: resp.StatusCode,
+				logger:     logger,
 			}
 		default:
 			logger.Error(err, "Unexpected error when reading response body")
 			unexpectedErr := fmt.Errorf("unexpected error when reading response body. Please retry. Original error: %w", err)
 			return Result{
-				err:    unexpectedErr,
-				logger: logger,
+				err:        unexpectedErr,
+				statusCode: resp.StatusCode,
+				logger:     logger,
 			}
 		}
 	}
