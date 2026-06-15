@@ -1188,7 +1188,7 @@ func (r *Request) transformResponse(ctx context.Context, resp *http.Response, re
 			// 2. Apiserver sends back the headers and then part of the body
 			// 3. Apiserver closes connection.
 			// 4. client-go should catch this and return an error.
-			logger.V(2).Info("Stream error when reading response body, may be caused by closed connection", "err", err)
+			logger.V(2).Info("Stream error when reading response body, may be caused by closed connection", "statusCode", resp.StatusCode, "err", err)
 			streamErr := fmt.Errorf("stream error when reading response body, may be caused by closed connection. Please retry. Original error: %w", err)
 			return Result{
 				err:        streamErr,
@@ -1196,7 +1196,7 @@ func (r *Request) transformResponse(ctx context.Context, resp *http.Response, re
 				logger:     logger,
 			}
 		default:
-			logger.Error(err, "Unexpected error when reading response body")
+			logger.Error(err, "Unexpected error when reading response body", "statusCode", resp.StatusCode)
 			unexpectedErr := fmt.Errorf("unexpected error when reading response body. Please retry. Original error: %w", err)
 			return Result{
 				err:        unexpectedErr,
